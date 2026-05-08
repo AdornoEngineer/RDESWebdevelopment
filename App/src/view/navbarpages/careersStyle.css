@@ -8,13 +8,13 @@
 }
 
 .career-box {
-    background-image: url("/App/src/view/images/news/eng.jpg");
+    background-image: url("/App/src/view/images/news/coding.png");
     background-size: cover;
     background-position: center;
     padding: 40px;
     border-radius: 10px;
-    color:white;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    color:black;
+    text-shadow: 2px 2px 5px rgba(213, 227, 231, 0.885);
     height: 300px;
 }
 

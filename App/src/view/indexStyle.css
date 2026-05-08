@@ -7,6 +7,23 @@
     font-family: 'Outfit', sans-serif;
 }
 
+ .title{
+    padding-left: 5%;
+    padding-top: 40px;
+    padding-bottom: 20px
+}
+
+.home-box {
+    background-image: url("/App/src/view/images/news/home.png");
+    background-size: cover;
+    background-position: center;
+    padding: 40px;
+    border-radius: 10px;
+    color:black;
+    text-shadow: 2px 2px 5px rgba(213, 227, 231, 0.885);
+    height: 300px;
+}
+
 .mainImageSize{
     max-width: 1875px;
     overflow: hidden;
