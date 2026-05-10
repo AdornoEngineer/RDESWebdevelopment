@@ -7,42 +7,72 @@
     font-family: 'Outfit', sans-serif;
 }
 
- .title{
-    padding-left: 5%;
-    padding-top: 40px;
-    padding-bottom: 20px
-}
-
 .home-box {
     background-image: url("/App/src/view/images/news/home.png");
     background-size: cover;
     background-position: center;
     padding: 40px;
     border-radius: 10px;
-    color:black;
-    text-shadow: 2px 2px 5px rgba(213, 227, 231, 0.885);
+    color: black;
     height: 300px;
 }
 
-.mainImageSize{
-    max-width: 1875px;
-    overflow: hidden;
+/* CONTAINER SCROLL */
+.card-container {
+    display: flex;
+    gap: 24px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    padding: 24px;
+
+    cursor: grab;
+    user-select: none;
+    scroll-behavior: smooth;
+
+    scrollbar-width: none;
 }
 
-.cardImageMaxSizep1{
-    max-width: 300px;
-    max-height: 300px;
-    overflow: hidden;
+.card-container::-webkit-scrollbar {
+    display: none;
 }
 
-.cardImageMaxSizep2{
-    max-width: 400px;
-    max-height: 500px;
+/* CARDS */
+.service-card {
+    min-width: 350px;
+    flex-shrink: 0;
+
+    border-radius: 16px;
     overflow: hidden;
+
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
 
-.cardImageMaxSizep3{
-    max-width: 300px;
-    max-height: 500px;
-    overflow: hidden;
+.service-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.service-card p {
+    color: #555;
+}
+
+/* BANNER */
+.why-banner {
+    background: linear-gradient(
+        135deg,
+        rgba(245,247,255,0.95),
+        rgba(220,230,255,0.85),
+        rgba(185,205,255,0.70)
+    );
+
+    color: #111827;
+
+    box-shadow: 0 10px 30px rgba(80,110,255,0.10);
+}
+
+.why-banner p {
+    color: #374151;
 }

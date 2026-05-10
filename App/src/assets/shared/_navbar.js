@@ -42,7 +42,7 @@ const navbar = `
 
                         <li>
                             <a class="dropdown-item"
-                            href="/App/src/view/navbarpages/careers.html">
+                            href="/App/src/view/navbarpages/careers/careers.html">
                             CAREERS
                             </a>
                         </li>
@@ -58,21 +58,21 @@ const navbar = `
 
                 <li class="nav-item">
                     <a class="nav-link me-4"
-                    href="/App/src/view/navbarpages/what_do_we_do.html">
+                    href="/App/src/view/navbarpages/what_do_we_do/what_do_we_do.html">
                     WHAT DO WE DO
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link me-4"
-                    href="/App/src/view/navbarpages/careers.html">
+                    href="/App/src/view/navbarpages/careers/careers.html">
                     CAREERS
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link me-4"
-                    href="/App/src/view/navbarpages/become_customer.html">
+                    href="/App/src/view/navbarpages/become_customer/become_customer.html">
                     BECOME A CUSTOMER
                     </a>
                 </li>

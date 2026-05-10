@@ -44,13 +44,17 @@
     margin-bottom: 10px;
 }
 
-.career-card p {
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-.career-container {
+.card-container {
     display: flex;
     gap: 120px;
     padding: 60px;
+    overflow-x: auto;
+    cursor: grab;
+    user-select: none;
+    scroll-behavior: smooth;
+}
+
+.career-card {
+    flex-shrink: 0;
+    width: 350px;
 }

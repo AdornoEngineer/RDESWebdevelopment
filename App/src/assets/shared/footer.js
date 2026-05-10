@@ -33,14 +33,14 @@ const footer = `
                     </li>
 
                     <li>
-                        <a href="/App/src/view/navbarpages/careers.html"
+                        <a href="/App/src/view/navbarpages/careers/careers.html"
                         class="text-dark text-decoration-none">
                         Careers
                         </a>
                     </li>
 
                     <li>
-                        <a href="/App/src/view/navbarpages/become_customer.html"
+                        <a href="/App/src/view/navbarpages/become_customer/become_customer.html"
                         class="text-dark text-decoration-none">
                         Become a customer
                         </a>
