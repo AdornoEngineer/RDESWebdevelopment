@@ -8,7 +8,7 @@
 }
 
 .career-box {
-    background-image: url("/App/src/view/images/news/nuvem.png");
+    background-image: url("/App/src/view/images/banners/nuvem.png");
     background-size: cover;
     background-position: center;
     padding: 40px;
@@ -16,4 +16,29 @@
     color:black;
     text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.793);
     height: 300px;
+}
+
+.container {
+    display: flex;
+    align-items: center; /* alinha verticalmente */
+    justify-content: space-between;
+
+    gap: 40px; /* espaço entre texto e imagem */
+}
+
+.text {
+    width: 50%;
+}
+
+.image img {
+    width: 400px;
+    border-radius: 10px;
+}
+
+.about-text {
+    padding: 40px;
+    border-radius: 10px;
+    color:black;
+    gap: 20px;
+    
 }
