@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Admin Dashboard - R D E S</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <link rel="icon" href="/App/src/view/images/systemweb/Logo.png">
+
+    <link rel="stylesheet" href="/App/src/view/admin/dashboard.css">
+</head>
+
+<body>
+
+    <header class="admin-header">
+        <h1 class="h4 m-0">R D E S - Admin Dashboard</h1>
+
+        <button id="logoutButton" class="btn btn-danger">
+            Logout
+        </button>
+    </header>
+
+    <main class="admin-container">
+        <div class="card-admin">
+            <div class="dashboard-title-area">
+                <div>
+                    <h2 class="h4">Customers Registrados</h2>
+                    <p class="text-muted m-0">
+                        Lista de pessoas cadastradas pelo formulário Become a Customer.
+                    </p>
+                </div>
+
+                <button id="refreshButton" class="btn btn-primary">
+                    Atualizar
+                </button>
+            </div>
+
+            <div id="messageArea"></div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Description</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="customersTableBody">
+                        <tr>
+                            <td colspan="5" class="text-center">Carregando...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const customersTableBody = document.getElementById("customersTableBody");
+        const messageArea = document.getElementById("messageArea");
+        const refreshButton = document.getElementById("refreshButton");
+        const logoutButton = document.getElementById("logoutButton");
+
+        function escapeHTML(value) {
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        async function checkLogin() {
+            try {
+                const response = await fetch("/api/admin/check");
+
+                if (!response.ok) {
+                    window.location.href = "/admin";
+                    return;
+                }
+
+            } catch (error) {
+                window.location.href = "/admin";
+            }
+        }
+
+        async function loadCustomers() {
+            messageArea.innerHTML = "";
+
+            customersTableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center">Carregando...</td>
+                </tr>
+            `;
+
+            try {
+                const response = await fetch("/api/admin/customers");
+                const result = await response.json();
+
+                if (!result.success) {
+                    messageArea.innerHTML = `
+                        <div class="alert alert-danger">
+                            ${escapeHTML(result.message)}
+                        </div>
+                    `;
+
+                    customersTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="text-center">Erro ao carregar dados.</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                const customers = result.customers;
+
+                if (customers.length === 0) {
+                    customersTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="text-center">Nenhum cadastro encontrado.</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                customersTableBody.innerHTML = customers.map(customer => `
+                    <tr>
+                        <td>${escapeHTML(customer.id)}</td>
+                        <td>${escapeHTML(customer.name)}</td>
+                        <td>${escapeHTML(customer.email)}</td>
+                        <td class="description-cell">${escapeHTML(customer.description)}</td>
+                        <td>${escapeHTML(customer.created_at)}</td>
+                    </tr>
+                `).join("");
+
+            } catch (error) {
+                console.error("Erro:", error);
+
+                messageArea.innerHTML = `
+                    <div class="alert alert-danger">
+                        Erro ao carregar os cadastros.
+                    </div>
+                `;
+
+                customersTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center">Erro ao carregar dados.</td>
+                    </tr>
+                `;
+            }
+        }
+
+        refreshButton.addEventListener("click", loadCustomers);
+
+        logoutButton.addEventListener("click", async function () {
+            try {
+                await fetch("/api/admin/logout", {
+                    method: "POST"
+                });
+
+                window.location.href = "/admin";
+
+            } catch (error) {
+                console.error("Erro ao sair:", error);
+            }
+        });
+
+        async function startDashboard() {
+            await checkLogin();
+            await loadCustomers();
+        }
+
+        startDashboard();
+    </script>
+
+</body>
+
+</html>

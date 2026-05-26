@@ -126,5 +126,52 @@
     <script src="/App/src/assets/shared/footer.js"></script>
     <script src="/App/src/assets/shared/cards.js"></script>
 
+<script>
+document.getElementById("customerForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const description = document.getElementById("description").value.trim();
+    const formMessage = document.getElementById("formMessage");
+
+    if (!name || !email || !description) {
+        formMessage.textContent = "Please fill in all fields.";
+        formMessage.style.color = "red";
+        return;
+    }
+
+    try {
+        const response = await fetch("/api/customers", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                description: description
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            formMessage.textContent = result.message;
+            formMessage.style.color = "green";
+            document.getElementById("customerForm").reset();
+        } else {
+            formMessage.textContent = result.message;
+            formMessage.style.color = "red";
+        }
+
+    } catch (error) {
+        console.error("Erro:", error);
+        formMessage.textContent = "Error connecting to the server.";
+        formMessage.style.color = "red";
+    }
+});
+</script>
+
 </body>
 </html>

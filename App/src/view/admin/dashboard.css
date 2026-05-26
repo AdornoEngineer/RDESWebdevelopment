@@ -1,0 +1,67 @@
+body {
+    background: #f5f5f5;
+    min-height: 100vh;
+}
+
+.admin-header {
+    background: #15172b;
+    color: white;
+    padding: 20px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-container {
+    padding: 32px;
+}
+
+.card-admin {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-title-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 16px;
+}
+
+#messageArea {
+    margin-bottom: 16px;
+}
+
+table {
+    background: white;
+}
+
+.description-cell {
+    max-width: 400px;
+    white-space: normal;
+    word-break: break-word;
+}
+
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+
+    .admin-container {
+        padding: 16px;
+    }
+
+    .dashboard-title-area {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dashboard-title-area button {
+        width: 100%;
+    }
+}
