@@ -7,57 +7,69 @@ const db = require("./db");
 const app = express();
 const PORT = 3000;
 
-// Configurações básicas
+// Basic settings
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configuração de sessão para login admin
+// Admin session configuration
 app.use(session({
     secret: "rdes-admin-secret",
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 1000 * 60 * 60 // 1 hora
+        maxAge: 1000 * 60 * 60 // 1 hour
     }
 }));
 
-// Serve TODOS os arquivos do projeto sem mudar os caminhos originais
+// Serve all project files without changing your original routes
 app.use(express.static(__dirname));
 
-// Login fixo do admin
-const ADMIN_EMAIL = "admin@rdes.local";
-const ADMIN_PASSWORD = "123456";
+// Admin accounts
+const ADMINS = [
+    {
+        email: "tiago@rdes.local",
+        password: "123456"
+    },
+    {
+        email: "joao@rdes.local",
+        password: "123456"
+    },
+    {
+        email: "laryssa@rdes.local",
+        password: "123456"
+    }
+];
 
-// Middleware para proteger rotas admin
+// Middleware to protect admin routes
 function requireAdminLogin(req, res, next) {
     if (!req.session.adminLoggedIn) {
         return res.status(401).json({
             success: false,
-            message: "Acesso negado. Faça login primeiro."
+            message: "Access denied. Please log in first."
         });
     }
 
     next();
 }
 
-// Quando acessar localhost:3000, abrir a home original
+// Home page
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "App", "src", "view", "index.html"));
 });
 
 // =============================
-// ROTAS DO FORMULÁRIO CUSTOMER
+// CUSTOMER FORM ROUTES
 // =============================
 
-// Rota para salvar cadastro do Become a Customer
+// Save Become a Customer form data
 app.post("/api/customers", (req, res) => {
     const { name, email, description } = req.body;
 
     if (!name || !email || !description) {
         return res.status(400).json({
             success: false,
-            message: "Preencha todos os campos."
+            message: "Please fill in all fields."
         });
     }
 
@@ -66,7 +78,7 @@ app.post("/api/customers", (req, res) => {
     if (!emailRegex.test(email)) {
         return res.status(400).json({
             success: false,
-            message: "E-mail inválido."
+            message: "Invalid email address."
         });
     }
 
@@ -77,31 +89,31 @@ app.post("/api/customers", (req, res) => {
 
     db.run(query, [name, email, description], function (err) {
         if (err) {
-            console.error("Erro ao salvar:", err.message);
+            console.error("Error saving customer:", err.message);
 
             return res.status(500).json({
                 success: false,
-                message: "Erro ao salvar no banco de dados."
+                message: "Error saving data to the database."
             });
         }
 
         res.status(201).json({
             success: true,
-            message: "Cadastro enviado com sucesso!",
+            message: "Customer registered successfully!",
             id: this.lastID
         });
     });
 });
 
-// Rota pública para listar os cadastros salvos
+// Public route to list customers
 app.get("/api/customers", (req, res) => {
     db.all("SELECT * FROM customers ORDER BY created_at DESC", [], (err, rows) => {
         if (err) {
-            console.error("Erro ao buscar:", err.message);
+            console.error("Error fetching customers:", err.message);
 
             return res.status(500).json({
                 success: false,
-                message: "Erro ao buscar cadastros."
+                message: "Error fetching customers."
             });
         }
 
@@ -110,37 +122,41 @@ app.get("/api/customers", (req, res) => {
 });
 
 // =============================
-// ROTAS DO ADMIN
+// ADMIN ROUTES
 // =============================
 
-// Login do admin
+// Admin login
 app.post("/api/admin/login", (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({
             success: false,
-            message: "Preencha e-mail e senha."
+            message: "Please enter email and password."
         });
     }
 
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    const adminFound = ADMINS.find(admin => {
+        return admin.email === email && admin.password === password;
+    });
+
+    if (adminFound) {
         req.session.adminLoggedIn = true;
-        req.session.adminEmail = email;
+        req.session.adminEmail = adminFound.email;
 
         return res.json({
             success: true,
-            message: "Login realizado com sucesso!"
+            message: "Login successful!"
         });
     }
 
     return res.status(401).json({
         success: false,
-        message: "E-mail ou senha inválidos."
+        message: "Invalid email or password."
     });
 });
 
-// Verificar se o admin está logado
+// Check admin session
 app.get("/api/admin/check", (req, res) => {
     if (req.session.adminLoggedIn) {
         return res.json({
@@ -151,36 +167,36 @@ app.get("/api/admin/check", (req, res) => {
 
     return res.status(401).json({
         loggedIn: false,
-        message: "Admin não está logado."
+        message: "Admin is not logged in."
     });
 });
 
-// Logout do admin
+// Admin logout
 app.post("/api/admin/logout", (req, res) => {
     req.session.destroy((err) => {
         if (err) {
             return res.status(500).json({
                 success: false,
-                message: "Erro ao sair."
+                message: "Error logging out."
             });
         }
 
         res.json({
             success: true,
-            message: "Logout realizado com sucesso."
+            message: "Logout successful."
         });
     });
 });
 
-// Rota protegida para o admin visualizar os customers
+// List customers in admin dashboard
 app.get("/api/admin/customers", requireAdminLogin, (req, res) => {
     db.all("SELECT * FROM customers ORDER BY created_at DESC", [], (err, rows) => {
         if (err) {
-            console.error("Erro ao buscar customers no admin:", err.message);
+            console.error("Error fetching admin customers:", err.message);
 
             return res.status(500).json({
                 success: false,
-                message: "Erro ao buscar cadastros."
+                message: "Error fetching customers."
             });
         }
 
@@ -191,7 +207,86 @@ app.get("/api/admin/customers", requireAdminLogin, (req, res) => {
     });
 });
 
-// Abrir tela de login admin
+// Update customer in admin dashboard
+app.put("/api/admin/customers/:id", requireAdminLogin, (req, res) => {
+    const { id } = req.params;
+    const { name, email, description } = req.body;
+
+    if (!name || !email || !description) {
+        return res.status(400).json({
+            success: false,
+            message: "Please fill in all fields."
+        });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid email address."
+        });
+    }
+
+    const query = `
+        UPDATE customers
+        SET name = ?, email = ?, description = ?
+        WHERE id = ?
+    `;
+
+    db.run(query, [name, email, description, id], function (err) {
+        if (err) {
+            console.error("Error updating customer:", err.message);
+
+            return res.status(500).json({
+                success: false,
+                message: "Error updating customer."
+            });
+        }
+
+        if (this.changes === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Customer not found."
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Customer updated successfully!"
+        });
+    });
+});
+
+// Delete customer in admin dashboard
+app.delete("/api/admin/customers/:id", requireAdminLogin, (req, res) => {
+    const { id } = req.params;
+
+    db.run("DELETE FROM customers WHERE id = ?", [id], function (err) {
+        if (err) {
+            console.error("Error deleting customer:", err.message);
+
+            return res.status(500).json({
+                success: false,
+                message: "Error deleting customer." 
+        });
+        }
+
+        if (this.changes === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Customer not found."
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Customer deleted successfully!"
+        });
+    });
+});
+
+// Admin login page
 app.get("/admin", (req, res) => {
     res.sendFile(path.join(__dirname, "App", "src", "view", "admin", "login.html"));
 });
@@ -200,14 +295,14 @@ app.get("/admin/", (req, res) => {
     res.sendFile(path.join(__dirname, "App", "src", "view", "admin", "login.html"));
 });
 
-// Abrir dashboard admin
+// Admin dashboard page
 app.get("/admin/dashboard", (req, res) => {
     res.sendFile(path.join(__dirname, "App", "src", "view", "admin", "dashboard.html"));
 });
 
-// Inicializar servidor
+// Start server
 app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
+    console.log(`Server running at http://localhost:${PORT}`);
     console.log(`Home: http://localhost:${PORT}`);
     console.log(`Admin: http://localhost:${PORT}/admin`);
 });

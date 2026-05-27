@@ -17,7 +17,7 @@
 <body>
 
     <div class="login-card">
-        <h1 class="h3 login-title">Admin Login</h1>
+        <h1 class="h3 login-title">Admin RDES</h1>
 
         <form id="loginForm">
             <div class="mb-3">
@@ -26,11 +26,11 @@
             </div>
 
             <div class="mb-3">
-                <label for="passwordInput" class="form-label">Senha</label>
+                <label for="passwordInput" class="form-label">Password</label>
                 <input type="password" class="form-control" id="passwordInput" required>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+            <button type="submit" class="btn btn-primary w-100">Enter</button>
 
             <p id="loginMessage"></p>
         </form>
@@ -45,7 +45,7 @@
             const loginMessage = document.getElementById("loginMessage");
 
             if (!email || !password) {
-                loginMessage.textContent = "Preencha e-mail e senha.";
+                loginMessage.textContent = "Please fill in email and password.";
                 loginMessage.style.color = "red";
                 return;
             }
@@ -78,7 +78,7 @@
 
             } catch (error) {
                 console.error("Erro:", error);
-                loginMessage.textContent = "Erro ao conectar com o servidor.";
+                loginMessage.textContent = "Error connecting to the server.";
                 loginMessage.style.color = "red";
             }
         });
